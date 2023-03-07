@@ -20,7 +20,9 @@ class Dimensions {
   static double sizedBox40 = screenHeight / 19.52;
   static double sizedBox12 = screenHeight / 65.08;
   static double sizedBox100 = screenHeight / 7.81;
+  // Below is 300
   static double sizedBox350 = screenHeight / 2.6;
+  static double hight70 = screenHeight / 11.15;
 
 // Width
   static double width20 = screenWidth / 19.6;

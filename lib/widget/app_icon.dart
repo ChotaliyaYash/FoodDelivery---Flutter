@@ -6,6 +6,7 @@ class AppIcon extends StatelessWidget {
   final Color backgroundColor;
   final Color iconColor;
   final double size;
+  final double iconSize;
 
   // ignore: prefer_const_constructors_in_immutables
   AppIcon(
@@ -13,7 +14,8 @@ class AppIcon extends StatelessWidget {
       required this.icon,
       this.backgroundColor = const Color(0xFFEBE2E2),
       this.iconColor = const Color(0xFF181616),
-      this.size = 0});
+      this.size = 0,
+      this.iconSize = 0});
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +31,7 @@ class AppIcon extends StatelessWidget {
       child: Icon(
         icon,
         color: iconColor,
-        size: Dimensions.sizedBox15,
+        size: iconSize == 0 ? Dimensions.sizedBox15 : iconSize,
       ),
     );
   }

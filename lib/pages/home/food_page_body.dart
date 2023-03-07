@@ -1,4 +1,7 @@
+// ignore_for_file: depend_on_referenced_packages, duplicate_ignore, sized_box_for_whitespace
+
 import 'package:flutter/material.dart';
+import 'package:fooddelivery/controllers/popular_product_controller.dart';
 import 'package:fooddelivery/utils/colors.dart';
 import 'package:fooddelivery/utils/dimenstions.dart';
 import 'package:fooddelivery/widget/app_column.dart';
@@ -7,6 +10,7 @@ import 'package:fooddelivery/widget/icon_and_text.dart';
 import 'package:fooddelivery/widget/small_text.dart';
 // ignore: depend_on_referenced_packages
 import 'package:dots_indicator/dots_indicator.dart';
+import 'package:get/get.dart';
 
 class FoodPageBody extends StatefulWidget {
   const FoodPageBody({super.key});
@@ -46,30 +50,35 @@ class _FoodPageBodyState extends State<FoodPageBody> {
     return Column(
       children: [
         // ignore: sized_box_for_whitespace
-        Container(
-          height: Dimensions.pageView,
-          child: PageView.builder(
-            controller: pageController,
-            // page view builder is use to build an app for sliding bar, in  the direction of horizental
-            itemBuilder: (context, position) {
-              return _buildPageItem(position);
-            },
-            itemCount: 5, // number of sliding windows
-          ),
-        ),
+        GetBuilder<PopularProductController>(builder: (popularProducts) {
+          return Container(
+            height: Dimensions.pageView,
+            child: PageView.builder(
+              controller: pageController,
+              // page view builder is use to build an app for sliding bar, in  the direction of horizental
+              itemBuilder: (context, position) {
+                return _buildPageItem(position);
+              },
+              itemCount: popularProducts
+                  .popularProductList.length, // number of sliding windows
+            ),
+          );
+        }),
         // creating page marker using dots_indicator
         // ignore: unnecessary_new
-        new DotsIndicator(
-          dotsCount: 5,
-          position: _currentPageValue,
-          decorator: DotsDecorator(
-            activeColor: MyColor.peach,
-            size: const Size.square(9.0),
-            activeSize: const Size(18.0, 9.0),
-            activeShape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(Dimensions.sizedBox5)),
-          ),
-        ),
+        GetBuilder<PopularProductController>(builder: (popularProducts) {
+          return DotsIndicator(
+            dotsCount: popularProducts.popularProductList.length,
+            position: _currentPageValue,
+            decorator: DotsDecorator(
+              activeColor: MyColor.peach,
+              size: const Size.square(9.0),
+              activeSize: const Size(18.0, 9.0),
+              activeShape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(Dimensions.sizedBox5)),
+            ),
+          );
+        }),
 
         SizedBox(height: Dimensions.sizedBox30),
         // Popular Text
