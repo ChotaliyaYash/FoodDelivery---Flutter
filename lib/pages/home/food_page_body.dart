@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fooddelivery/utils/colors.dart';
 import 'package:fooddelivery/utils/dimenstions.dart';
+import 'package:fooddelivery/widget/app_column.dart';
 import 'package:fooddelivery/widget/big_text.dart';
 import 'package:fooddelivery/widget/icon_and_text.dart';
 import 'package:fooddelivery/widget/small_text.dart';
@@ -21,7 +22,7 @@ class _FoodPageBodyState extends State<FoodPageBody> {
   var _currentPageValue = 0.0;
   final _scaleFactor = 0.8;
   final double _height = Dimensions.pageViewContainer;
-  // print(Dimensions.screenHeight);
+  // print(Dimensions.screenHeight);.
 
 // for page number
   @override
@@ -68,8 +69,130 @@ class _FoodPageBodyState extends State<FoodPageBody> {
             activeShape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(Dimensions.sizedBox5)),
           ),
-        )
+        ),
+
+        SizedBox(height: Dimensions.sizedBox30),
+        // Popular Text
+        _popularText(),
+
+        // List of food and images
+        _listContainer(),
+        // ),
       ],
+    );
+  }
+
+// List of many items
+  ListView _listContainer() {
+    return ListView.builder(
+        physics: const NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        itemCount: 10,
+        itemBuilder: (context, index) {
+          return Container(
+              margin: EdgeInsets.only(
+                  left: Dimensions.sizedBox20,
+                  right: Dimensions.sizedBox20,
+                  bottom: Dimensions.sizedBox10),
+              child: Row(
+                children: [
+                  // Image Section
+                  Container(
+                    width: Dimensions.listViewImageSize,
+                    height: Dimensions.pageViewTextContainer,
+                    decoration: BoxDecoration(
+                        borderRadius:
+                            BorderRadius.circular(Dimensions.sizedBox20),
+                        color: Colors.white38,
+                        image: const DecorationImage(
+                            fit: BoxFit.cover,
+                            image: AssetImage("assets/images/food1.jpeg"))),
+                  ),
+                  // Text container
+                  _textContainer()
+                ],
+              ));
+        });
+  }
+
+// Text Container
+  Expanded _textContainer() {
+    return Expanded(
+      child: Container(
+        height: Dimensions.sizedBox100,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.only(
+                bottomRight: Radius.circular(Dimensions.sizedBox20),
+                topRight: Radius.circular(Dimensions.sizedBox20)),
+            color: Colors.white),
+        child: Padding(
+          padding: EdgeInsets.only(
+              left: Dimensions.sizedBox10, right: Dimensions.sizedBox10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              BigText(text: "Nutritious fruit meal in India "),
+              SizedBox(
+                height: Dimensions.sizedBox10,
+              ),
+              SmallText(text: "With Indian specific one"),
+              SizedBox(
+                height: Dimensions.sizedBox10,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: const [
+                  IconAndText(
+                      text: "Normal",
+                      icon: Icons.circle_sharp,
+                      iconColor: Color.fromARGB(255, 246, 191, 129)),
+                  IconAndText(
+                      text: "17Km",
+                      icon: Icons.location_on,
+                      iconColor: Color.fromARGB(255, 142, 236, 145)),
+                  IconAndText(
+                      text: "32min",
+                      icon: Icons.access_time_rounded,
+                      iconColor: Color.fromARGB(255, 246, 136, 128))
+                ],
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+// Popular text contianer
+  Container _popularText() {
+    return Container(
+      margin: EdgeInsets.only(left: Dimensions.sizedBox30),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          BigText(text: "Popular"),
+          SizedBox(
+            width: Dimensions.sizedBox10,
+          ),
+          // ignore: avoid_unnecessary_containers
+          Container(
+            margin: const EdgeInsets.only(bottom: 3),
+            child: BigText(
+              text: ".",
+              color: Colors.black26,
+            ),
+          ),
+          SizedBox(
+            width: Dimensions.sizedBox10,
+          ),
+          // ignore: avoid_unnecessary_containers
+          Container(
+            margin: const EdgeInsets.only(bottom: 2),
+            child: SmallText(text: "Food pairing"),
+          )
+        ],
+      ),
     );
   }
 
@@ -155,62 +278,6 @@ class _FoodPageBodyState extends State<FoodPageBody> {
             top: Dimensions.sizedBox15,
             left: Dimensions.sizedBox15,
             right: Dimensions.sizedBox15),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment
-              .start, // to justify the start, end (justification) of the axis
-          children: [
-            BigText(text: "Cake"),
-            SizedBox(
-              height: Dimensions.sizedBox10,
-            ),
-            Row(
-              children: [
-                Wrap(
-                  // it is use to generate stars
-                  children: List.generate(
-                      // it denerats 5 similer items and return widgets
-                      5,
-                      (index) => Icon(
-                            Icons.star,
-                            color: MyColor.peach,
-                            size: Dimensions.sizedBox15,
-                          )),
-                ),
-                SizedBox(
-                  width: Dimensions.sizedBox10,
-                ),
-                SmallText(text: "4.5"),
-                SizedBox(
-                  width: Dimensions.sizedBox10,
-                ),
-                SmallText(text: "1023"),
-                SizedBox(
-                  width: Dimensions.sizedBox10,
-                ),
-                SmallText(text: "Comments")
-              ],
-            ),
-            SizedBox(
-              height: Dimensions.sizedBox20,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
-                IconAndText(
-                    text: "Normal",
-                    icon: Icons.circle_sharp,
-                    iconColor: Color.fromARGB(255, 246, 191, 129)),
-                IconAndText(
-                    text: "17Km",
-                    icon: Icons.location_on,
-                    iconColor: Color.fromARGB(255, 142, 236, 145)),
-                IconAndText(
-                    text: "32min",
-                    icon: Icons.access_time_rounded,
-                    iconColor: Color.fromARGB(255, 246, 136, 128))
-              ],
-            )
-          ],
-        ));
+        child: const AppColumn(text: "Cake"));
   }
 }

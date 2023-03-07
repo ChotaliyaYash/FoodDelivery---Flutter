@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fooddelivery/home/food_page_body.dart';
+import 'package:fooddelivery/pages/home/food_page_body.dart';
 import 'package:fooddelivery/utils/colors.dart';
 import 'package:fooddelivery/utils/dimenstions.dart';
 import 'package:fooddelivery/widget/big_text.dart';
@@ -20,7 +20,9 @@ class _MainFoodPageState extends State<MainFoodPage> {
         children: [
           // ignore: avoid_unnecessary_containers
           _header(), // header of the home app
-          const FoodPageBody() // body of the homepage
+          const Expanded(
+              child: SingleChildScrollView(
+                  child: FoodPageBody())) // body of the homepage
         ],
       ),
     );

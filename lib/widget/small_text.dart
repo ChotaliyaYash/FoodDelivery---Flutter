@@ -22,7 +22,7 @@ class SmallText extends StatelessWidget {
           color: color,
           fontWeight: FontWeight.w400,
           fontSize: size == 0 ? Dimensions.sizedBox12 : size,
-          height: 1.2),
+          height: height),
     );
   }
 }
