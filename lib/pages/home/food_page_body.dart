@@ -2,6 +2,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:fooddelivery/controllers/popular_product_controller.dart';
+import 'package:fooddelivery/controllers/recommended_product_controller.dart';
+import 'package:fooddelivery/models/products_model.dart';
+import 'package:fooddelivery/pages/food/popular_food_directory.dart';
+import 'package:fooddelivery/routes/route_helper.dart';
+import 'package:fooddelivery/utils/app_constants.dart';
 import 'package:fooddelivery/utils/colors.dart';
 import 'package:fooddelivery/utils/dimenstions.dart';
 import 'package:fooddelivery/widget/app_column.dart';
@@ -51,24 +56,36 @@ class _FoodPageBodyState extends State<FoodPageBody> {
       children: [
         // ignore: sized_box_for_whitespace
         GetBuilder<PopularProductController>(builder: (popularProducts) {
-          return Container(
-            height: Dimensions.pageView,
-            child: PageView.builder(
-              controller: pageController,
-              // page view builder is use to build an app for sliding bar, in  the direction of horizental
-              itemBuilder: (context, position) {
-                return _buildPageItem(position);
-              },
-              itemCount: popularProducts
-                  .popularProductList.length, // number of sliding windows
-            ),
-          );
+          return popularProducts.isLoaded
+              ? Container(
+                  height: Dimensions.pageView,
+                  child: GestureDetector(
+                    onTap: () {
+                      Get.toNamed(RouteHelper.getPopularFood());
+                    },
+                    child: PageView.builder(
+                      controller: pageController,
+                      // page view builder is use to build an app for sliding bar, in  the direction of horizental
+                      itemBuilder: (context, position) {
+                        return _buildPageItem(position,
+                            popularProducts.popularProductList[position]);
+                      },
+                      itemCount: popularProducts.popularProductList
+                          .length, // number of sliding windows
+                    ),
+                  ),
+                )
+              : const CircularProgressIndicator(
+                  color: MyColor.peach,
+                );
         }),
         // creating page marker using dots_indicator
         // ignore: unnecessary_new
         GetBuilder<PopularProductController>(builder: (popularProducts) {
           return DotsIndicator(
-            dotsCount: popularProducts.popularProductList.length,
+            dotsCount: popularProducts.popularProductList.isEmpty
+                ? 1
+                : popularProducts.popularProductList.length,
             position: _currentPageValue,
             decorator: DotsDecorator(
               activeColor: MyColor.peach,
@@ -85,18 +102,25 @@ class _FoodPageBodyState extends State<FoodPageBody> {
         _popularText(),
 
         // List of food and images
-        _listContainer(),
+        GetBuilder<RecommendedProductController>(
+            builder: (recommendedProducts) {
+          return recommendedProducts.isLoaded
+              ? _listContainer(recommendedProducts)
+              : const CircularProgressIndicator(
+                  color: MyColor.peach,
+                );
+        }),
         // ),
       ],
     );
   }
 
 // List of many items
-  ListView _listContainer() {
+  ListView _listContainer(RecommendedProductController recommendedProducts) {
     return ListView.builder(
         physics: const NeverScrollableScrollPhysics(),
         shrinkWrap: true,
-        itemCount: 10,
+        itemCount: recommendedProducts.recommendedProductList.length,
         itemBuilder: (context, index) {
           return Container(
               margin: EdgeInsets.only(
@@ -113,19 +137,21 @@ class _FoodPageBodyState extends State<FoodPageBody> {
                         borderRadius:
                             BorderRadius.circular(Dimensions.sizedBox20),
                         color: Colors.white38,
-                        image: const DecorationImage(
+                        image: DecorationImage(
                             fit: BoxFit.cover,
-                            image: AssetImage("assets/images/food1.jpeg"))),
+                            image: NetworkImage(
+                                "${AppConstants.BASE_URL}${AppConstants.UPLOD_URI}${recommendedProducts.recommendedProductList[index].img!}"))),
                   ),
                   // Text container
-                  _textContainer()
+                  _textContainer(
+                      recommendedProducts.recommendedProductList[index])
                 ],
               ));
         });
   }
 
 // Text Container
-  Expanded _textContainer() {
+  Expanded _textContainer(ProductModel recommendedProduct) {
     return Expanded(
       child: Container(
         height: Dimensions.sizedBox100,
@@ -141,11 +167,14 @@ class _FoodPageBodyState extends State<FoodPageBody> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              BigText(text: "Nutritious fruit meal in India "),
+              BigText(text: recommendedProduct.name!),
               SizedBox(
                 height: Dimensions.sizedBox10,
               ),
-              SmallText(text: "With Indian specific one"),
+              SmallText(
+                text: recommendedProduct.description!,
+                overFlowCheck: true,
+              ),
               SizedBox(
                 height: Dimensions.sizedBox10,
               ),
@@ -180,7 +209,7 @@ class _FoodPageBodyState extends State<FoodPageBody> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          BigText(text: "Popular"),
+          BigText(text: "Recommended"),
           SizedBox(
             width: Dimensions.sizedBox10,
           ),
@@ -206,7 +235,7 @@ class _FoodPageBodyState extends State<FoodPageBody> {
   }
 
 //creating a slider with cool effects
-  Widget _buildPageItem(int index) {
+  Widget _buildPageItem(int index, ProductModel popularProduct) {
     // below code is for zoom in and zoom out of the other cards, this is done using matrix
     // ignore: unnecessary_new
     Matrix4 matrix = new Matrix4.identity();
@@ -247,9 +276,10 @@ class _FoodPageBodyState extends State<FoodPageBody> {
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(Dimensions.sizedBox30),
                 color: index.isEven ? MyColor.paledogwood : MyColor.apricot,
-                image: const DecorationImage(
+                image: DecorationImage(
                     fit: BoxFit.cover,
-                    image: AssetImage("assets/images/food2.jpeg"))),
+                    image: NetworkImage(
+                        "${AppConstants.BASE_URL}${AppConstants.UPLOD_URI}${popularProduct.img!}"))),
           ),
           Align(
             // use to change the alignment of the image over another another image, we can change overlap container direction
@@ -271,7 +301,7 @@ class _FoodPageBodyState extends State<FoodPageBody> {
                     const BoxShadow(color: Colors.white, offset: Offset(-5, 0)),
                     const BoxShadow(color: Colors.white, offset: Offset(5, 0))
                   ]),
-              child: _pageItemName(index),
+              child: _pageItemName(index, popularProduct),
             ),
           )
         ],
@@ -280,13 +310,13 @@ class _FoodPageBodyState extends State<FoodPageBody> {
   }
 
 // Slidebar items display
-  Widget _pageItemName(int index) {
+  Widget _pageItemName(int index, ProductModel popularProduct) {
     // ignore: avoid_unnecessary_containers
     return Container(
         padding: EdgeInsets.only(
             top: Dimensions.sizedBox15,
             left: Dimensions.sizedBox15,
             right: Dimensions.sizedBox15),
-        child: const AppColumn(text: "Cake"));
+        child: AppColumn(text: popularProduct.name!));
   }
 }

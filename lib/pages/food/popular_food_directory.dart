@@ -1,10 +1,14 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'package:flutter/material.dart';
+import 'package:fooddelivery/pages/home/mian_food_page.dart';
 import 'package:fooddelivery/utils/colors.dart';
 import 'package:fooddelivery/utils/dimenstions.dart';
 import 'package:fooddelivery/widget/app_column.dart';
 import 'package:fooddelivery/widget/app_icon.dart';
 import 'package:fooddelivery/widget/big_text.dart';
 import 'package:fooddelivery/widget/expendable_text.dart';
+import 'package:get/get.dart';
 
 class PopularFoodDetail extends StatelessWidget {
   const PopularFoodDetail({super.key});
@@ -34,7 +38,11 @@ class PopularFoodDetail extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                AppIcon(icon: Icons.arrow_back),
+                GestureDetector(
+                    onTap: () {
+                      Get.to(() => const MainFoodPage());
+                    },
+                    child: AppIcon(icon: Icons.arrow_back)),
                 AppIcon(icon: Icons.shopping_cart_outlined)
               ],
             )),
