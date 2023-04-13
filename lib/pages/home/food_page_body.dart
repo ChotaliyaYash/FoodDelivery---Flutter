@@ -1,4 +1,4 @@
-// ignore_for_file: depend_on_referenced_packages, duplicate_ignore, sized_box_for_whitespace
+// ignore_for_file: depend_on_referenced_packages, duplicate_ignore, sized_box_for_whitespace, unused_import
 
 import 'package:flutter/material.dart';
 import 'package:fooddelivery/controllers/popular_product_controller.dart';
@@ -59,20 +59,20 @@ class _FoodPageBodyState extends State<FoodPageBody> {
           return popularProducts.isLoaded
               ? Container(
                   height: Dimensions.pageView,
-                  child: GestureDetector(
-                    onTap: () {
-                      Get.toNamed(RouteHelper.getPopularFood());
+                  child: PageView.builder(
+                    controller: pageController,
+                    // page view builder is use to build an app for sliding bar, in  the direction of horizental
+                    itemBuilder: (context, position) {
+                      return GestureDetector(
+                        onTap: () {
+                          Get.toNamed(RouteHelper.getPopularFood(position));
+                        },
+                        child: _buildPageItem(position,
+                            popularProducts.popularProductList[position]),
+                      );
                     },
-                    child: PageView.builder(
-                      controller: pageController,
-                      // page view builder is use to build an app for sliding bar, in  the direction of horizental
-                      itemBuilder: (context, position) {
-                        return _buildPageItem(position,
-                            popularProducts.popularProductList[position]);
-                      },
-                      itemCount: popularProducts.popularProductList
-                          .length, // number of sliding windows
-                    ),
+                    itemCount: popularProducts
+                        .popularProductList.length, // number of sliding windows
                   ),
                 )
               : const CircularProgressIndicator(
@@ -122,31 +122,36 @@ class _FoodPageBodyState extends State<FoodPageBody> {
         shrinkWrap: true,
         itemCount: recommendedProducts.recommendedProductList.length,
         itemBuilder: (context, index) {
-          return Container(
-              margin: EdgeInsets.only(
-                  left: Dimensions.sizedBox20,
-                  right: Dimensions.sizedBox20,
-                  bottom: Dimensions.sizedBox10),
-              child: Row(
-                children: [
-                  // Image Section
-                  Container(
-                    width: Dimensions.listViewImageSize,
-                    height: Dimensions.pageViewTextContainer,
-                    decoration: BoxDecoration(
-                        borderRadius:
-                            BorderRadius.circular(Dimensions.sizedBox20),
-                        color: Colors.white38,
-                        image: DecorationImage(
-                            fit: BoxFit.cover,
-                            image: NetworkImage(
-                                "${AppConstants.BASE_URL}${AppConstants.UPLOD_URI}${recommendedProducts.recommendedProductList[index].img!}"))),
-                  ),
-                  // Text container
-                  _textContainer(
-                      recommendedProducts.recommendedProductList[index])
-                ],
-              ));
+          return GestureDetector(
+            onTap: () {
+              Get.toNamed(RouteHelper.getRecommendedFood(index));
+            },
+            child: Container(
+                margin: EdgeInsets.only(
+                    left: Dimensions.sizedBox20,
+                    right: Dimensions.sizedBox20,
+                    bottom: Dimensions.sizedBox10),
+                child: Row(
+                  children: [
+                    // Image Section
+                    Container(
+                      width: Dimensions.listViewImageSize,
+                      height: Dimensions.pageViewTextContainer,
+                      decoration: BoxDecoration(
+                          borderRadius:
+                              BorderRadius.circular(Dimensions.sizedBox20),
+                          color: Colors.white38,
+                          image: DecorationImage(
+                              fit: BoxFit.cover,
+                              image: NetworkImage(
+                                  "${AppConstants.BASE_URL}${AppConstants.UPLOD_URI}${recommendedProducts.recommendedProductList[index].img!}"))),
+                    ),
+                    // Text container
+                    _textContainer(
+                        recommendedProducts.recommendedProductList[index])
+                  ],
+                )),
+          );
         });
   }
 

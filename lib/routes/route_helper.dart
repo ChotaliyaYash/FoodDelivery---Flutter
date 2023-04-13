@@ -11,24 +11,33 @@ class RouteHelper {
   static String recommendedFood = "/recommended-food";
 
   static String getInitial() => initial;
-  static String getPopularFood() => popularFood;
-  static String getRecommendedFood() => recommendedFood;
+  static String getPopularFood(int pageId) => "$popularFood?pageId=$pageId";
+  static String getRecommendedFood(int pageId) =>
+      "$recommendedFood?pageId=$pageId";
 
   static List<GetPage> routes = [
     // Initial route Details
     GetPage(
         name: initial,
-        page: () => const MainFoodPage(),
+        page: () {
+          return const MainFoodPage();
+        },
         transition: Transition.fadeIn),
     // popular food details
     GetPage(
         name: popularFood,
-        page: () => const PopularFoodDetail(),
+        page: () {
+          var pageId = Get.parameters['pageId'];
+          return PopularFoodDetail(pageId: int.parse(pageId!));
+        },
         transition: Transition.fadeIn),
     // Recommended Food details
     GetPage(
         name: recommendedFood,
-        page: () => const RecommendedFoodDetail(),
+        page: () {
+          var pageId = Get.parameters['pageId'];
+          return RecommendedFoodDetail(pageId: int.parse(pageId!));
+        },
         transition: Transition.fadeIn),
   ];
 }
